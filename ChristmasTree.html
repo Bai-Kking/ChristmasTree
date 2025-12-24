@@ -1,0 +1,199 @@
+<!--圣诞快乐饱饱！如果你能看到这个页面，说明你就素一个资深的程序员啦！-->
+<!DOCTYPE html>
+<html lang = "zh-CN">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content="width = device-width, initial-scale = 1.0">
+    <title>Christmas Tree For You!</title>
+    <script src = "https://cdn.tailwindcss.com"></script>
+    <link href = "https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel = "stylesheet">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: 0;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: 'Courier Prime', monospace;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #tree_container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            line-height: 1.2;
+            cursor: default;
+        }
+
+        .char {
+            display: inline-block;
+            margin: 0 0.5px;
+            transition: color 0.5s ease;
+        }
+
+        .star { font-size: 1.5rem; }
+        .heart { text-shadow: 0 0 8px currentColor; }
+        .msg {
+            margin-top: 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 0.2rem;
+            animation: twinkle 2s infinite ease-in-out;
+            text-shadow: 0 0 10px white;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        #snowCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <audio controls autoplay loop style="display:none;">
+        <source src="https://precious-indigo-j5nugywt3o-1qtapqoe4v.edgeone.dev/M50000450F8H2BjbB3.mp3" type="audio/mpeg">
+    </audio>
+    
+    <canvas id = "snowCanvas"></canvas>
+    
+    <div id = "tree_container">
+        <div id = "tree_content"></div>
+        <div class = "msg">Merry Christmas!</div>
+        <div class = "msg">圣诞快乐饱饱！</div>
+    </div>
+
+    <script>
+        const colors = [
+            '#FF3E3E', '#FF6B6B', '#FF9AA2', '#E53935', '#B71C1C', '#00C853', '#00E676', '#66FF66', '#2E7D32', '#1B5E20', '#FFD73E', '#FFC107', '#FFB300', '#FFA500', '#3E84FF', '#4FC3F7',
+            '#2979FF', '#00BCD4', '#FF3EEF', '#F06292', '#AB47BC', '#7C4DFF', '#3EFFF9', '#FFFFFF'
+        ];
+        const rows = 15;
+        // DOM元素缓存
+        const tree_content = document.getElementById('tree_content');
+        function init_tree() {
+            let tree_html = '';
+            
+            // 星星
+            tree_html += `<div class="star"><span class="char" style="color: #00C853">★</span></div>`;
+            
+            // 树身
+            for (let i = 0; i < rows; i++) {
+                tree_html += '<div class="row">';
+                const char_count = i * 2 + 1;
+                for (let j = 0; j < char_count; j++) {
+                    // 随机生成爱心
+                    const is_heart = Math.random() > 0.91;
+                    const char = is_heart ? '❤' : '*';
+                    const random_color = colors[Math.floor(Math.random() * colors.length)];
+                    tree_html += `<span class="char ${is_heart ? 'heart' : ''}" style="color: ${random_color}">${char}</span>`;
+                }
+                tree_html += '</div>';
+            }
+            
+            // 树干
+            for (let i = 0; i < 3; i++) {
+                tree_html += '<div class="row">';
+                for (let trunk_char = 0; trunk_char < 3; trunk_char++) {
+                    const random_color = colors[Math.floor(Math.random() * colors.length)];
+                    tree_html += `<span class="char" style="color: ${random_color}">*</span>`;
+                }
+                tree_html += '</div>';
+            }
+            
+            tree_content.innerHTML = tree_html;
+        }
+
+        
+        function animate_tree() {
+            const all_chars = document.querySelectorAll('.char');
+            // 随机变色
+            all_chars.forEach(char => {
+                if (Math.random() > 0.9) {
+                    char.style.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+            });
+            setTimeout(animate_tree, 200);
+        }
+
+        // 雪花特效
+        function init_snow() {
+            const snow_canvas = document.getElementById('snowCanvas');
+            const snow_ctx = snow_canvas.getContext('2d');
+            let canvas_width, canvas_height;
+            let snowflakes = [];
+            
+            function resize_canvas() {
+                canvas_width = snow_canvas.width = window.innerWidth;
+                canvas_height = snow_canvas.height = window.innerHeight;
+            }
+
+            // 生成雪花数组
+            function create_snowflakes() {
+                snowflakes = [];
+                for (let i = 0; i < 100; i++) {
+                    snowflakes.push({
+                        x: Math.random() * canvas_width,   
+                        y: Math.random() * canvas_height,  
+                        r: Math.random() * 2 + 1,          
+                        s: Math.random() * 1 + 0.5,        
+                        o: Math.random() * 0.5 + 0.2       
+                    });
+                }
+            }
+
+            function draw_snow() {
+                // 清空
+                snow_ctx.clearRect(0, 0, canvas_width, canvas_height);
+                // 绘制
+                snowflakes.forEach(flake => {
+                    snow_ctx.beginPath();
+                    snow_ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+                    snow_ctx.fillStyle = `rgba(255,255,255,${flake.o})`;
+                    snow_ctx.fill();
+                    // 雪花下落
+                    flake.y += flake.s;
+                    
+                    if (flake.y > canvas_height) {
+                        flake.y = -5;
+                        flake.x = Math.random() * canvas_width;
+                    }
+                });
+                requestAnimationFrame(draw_snow);
+            }
+
+            // 窗口大小变化时重新适配
+            window.addEventListener('resize', () => {
+                resize_canvas();
+                create_snowflakes();
+            });
+
+            // 初始化雪花
+            resize_canvas();
+            create_snowflakes();
+            draw_snow();
+        }
+
+        // 启动！
+        window.onload = function() {
+            init_tree();
+            animate_tree();
+            init_snow();
+        };
+    </script>
+</body>
+</html>
