@@ -64,10 +64,16 @@
 </head>
 <body>
     
-    
-    <audio controls autoplay loop style="display:none;">
+    <audio id="bgm" loop muted>
         <source src="https://precious-indigo-j5nugywt3o-1qtapqoe4v.edgeone.dev/M50000450F8H2BjbB3.mp3" type="audio/mpeg">
     </audio>
+    <script>
+        document.addEventListener('click', function() {
+            var audio = document.getElementById('bgm');
+            audio.muted = false;
+            audio.play();
+        });
+    </script>
     
     <canvas id = "snowCanvas"></canvas>
     
