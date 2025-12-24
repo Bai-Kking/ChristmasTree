@@ -22,7 +22,7 @@
             user-select: none;
         }
 
-        #tree_container {
+        #TREE {
             position: relative;
             z-index: 10;
             text-align: center;
@@ -38,16 +38,16 @@
 
         .star { font-size: 1.5rem; }
         .heart { text-shadow: 0 0 8px currentColor; }
-        .msg {
+        .txt {
             margin-top: 2rem;
             font-size: 2rem;
             font-weight: bold;
             letter-spacing: 0.2rem;
-            animation: twinkle 2s infinite ease-in-out;
+            animation: shanshan 2s infinite ease-in-out;
             text-shadow: 0 0 10px white;
         }
 
-        @keyframes twinkle {
+        @keyframes shanshan {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(1.1); }
         }
@@ -64,8 +64,8 @@
 </head>
 <body>
     
-    <audio id="bgm" loop muted>
-        <source src="https://precious-indigo-j5nugywt3o-1qtapqoe4v.edgeone.dev/M50000450F8H2BjbB3.mp3" type="audio/mpeg">
+    <audio id = "bgm" loop muted>
+        <source src = "https://precious-indigo-j5nugywt3o-1qtapqoe4v.edgeone.dev/M50000450F8H2BjbB3.mp3" type = "audio/mpeg">
     </audio>
     <script>
         document.addEventListener('click', function() {
@@ -77,10 +77,10 @@
     
     <canvas id = "snowCanvas"></canvas>
     
-    <div id = "tree_container">
-        <div id = "tree_content"></div>
-        <div class = "msg">Merry Christmas!</div>
-        <div class = "msg">圣诞快乐饱饱！</div>
+    <div id = "TREE">
+        <div id = "trContent"></div>
+        <div class = "txt">Merry Christmas!</div>
+        <div class = "txt">圣诞快乐饱饱！</div>
     </div>
 
     <script>
@@ -88,64 +88,59 @@
             '#FF3E3E', '#FF6B6B', '#FF9AA2', '#E53935', '#B71C1C', '#00C853', '#00E676', '#66FF66', '#2E7D32', '#1B5E20', '#FFD73E', '#FFC107', '#FFB300', '#FFA500', '#3E84FF', '#4FC3F7',
             '#2979FF', '#00BCD4', '#FF3EEF', '#F06292', '#AB47BC', '#7C4DFF', '#3EFFF9', '#FFFFFF'
         ];
-        const rows = 15;
         // DOM元素缓存
-        const tree_content = document.getElementById('tree_content');
-        function init_tree() {
-            let tree_html = '';
+        const trContent = document.getElementById('trContent');
+        function initTree() {
+            let it = '';
             
-            // 星星
-            tree_html += `<div class="star"><span class="char" style="color: #00C853">★</span></div>`;
+            it += `<div class = "star"><span class = "char" style = "color: #00C853">★</span></div>`;
             
-            // 树身
-            for (let i = 0; i < rows; i++) {
-                tree_html += '<div class="row">';
-                const char_count = i * 2 + 1;
-                for (let j = 0; j < char_count; j++) {
+            for (let i = 0; i < 15; i++) {
+                it += '<div class="row">';
+                for (let j = 0; j < i * 2 + 1; j++) {
                     // 随机生成爱心
-                    const is_heart = Math.random() > 0.91;
-                    const char = is_heart ? '❤' : '*';
-                    const random_color = colors[Math.floor(Math.random() * colors.length)];
-                    tree_html += `<span class="char ${is_heart ? 'heart' : ''}" style="color: ${random_color}">${char}</span>`;
+                    const is_heart = Math.random();
+                    const char = is_heart > 0.91 ? '❤' : '*';
+                    const rand = colors[Math.floor(Math.random() * colors.length)];
+                    it += `<span class = "char ${is_heart ? 'heart' : ''}" style = "color: ${rand}">${char}</span>`;
                 }
-                tree_html += '</div>';
+                it += '</div>';
             }
             
-            // 树干
             for (let i = 0; i < 3; i++) {
-                tree_html += '<div class="row">';
-                for (let trunk_char = 0; trunk_char < 3; trunk_char++) {
-                    const random_color = colors[Math.floor(Math.random() * colors.length)];
-                    tree_html += `<span class="char" style="color: ${random_color}">*</span>`;
+                it += '<div class = "row">';
+                for (let j = 0; j < 3; j++) {
+                    const rand = colors[Math.floor(Math.random() * colors.length)];
+                    it += `<span class = "char" style="color: ${rand}">*</span>`;
                 }
-                tree_html += '</div>';
+                it += '</div>';
             }
             
-            tree_content.innerHTML = tree_html;
+            trContent.innerHTML = it;
         }
 
         
-        function animate_tree() {
-            const all_chars = document.querySelectorAll('.char');
+        function animateTree() {
+            const tot = document.querySelectorAll('.char');
             // 随机变色
-            all_chars.forEach(char => {
+            tot.forEach(char => {
                 if (Math.random() > 0.9) {
                     char.style.color = colors[Math.floor(Math.random() * colors.length)];
                 }
             });
-            setTimeout(animate_tree, 200);
+            setTimeout(animateTree, 200);
         }
 
         // 雪花特效
-        function init_snow() {
+        function initSnow() {
             const snow_canvas = document.getElementById('snowCanvas');
-            const snow_ctx = snow_canvas.getContext('2d');
-            let canvas_width, canvas_height;
+            const pen = snow_canvas.getContext('2d');
+            let width, height;
             let snowflakes = [];
             
-            function resize_canvas() {
-                canvas_width = snow_canvas.width = window.innerWidth;
-                canvas_height = snow_canvas.height = window.innerHeight;
+            function re() {
+                width = snow_canvas.width = window.innerWidth;
+                height = snow_canvas.height = window.innerHeight;
             }
 
             // 生成雪花数组
@@ -153,52 +148,52 @@
                 snowflakes = [];
                 for (let i = 0; i < 100; i++) {
                     snowflakes.push({
-                        x: Math.random() * canvas_width,   
-                        y: Math.random() * canvas_height,  
-                        r: Math.random() * 2 + 1,          
-                        s: Math.random() * 1 + 0.5,        
-                        o: Math.random() * 0.5 + 0.2       
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        r: Math.random() * 2 + 1,
+                        s: Math.random() * 1 + 0.5,
+                        o: Math.random() * 0.5 + 0.2
                     });
                 }
             }
 
             function draw_snow() {
                 // 清空
-                snow_ctx.clearRect(0, 0, canvas_width, canvas_height);
+                pen.clearRect(0, 0, width, height);
                 // 绘制
                 snowflakes.forEach(flake => {
-                    snow_ctx.beginPath();
-                    snow_ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
-                    snow_ctx.fillStyle = `rgba(255,255,255,${flake.o})`;
-                    snow_ctx.fill();
+                    pen.beginPath();
+                    pen.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+                    pen.fillStyle = `rgba(255,255,255,${flake.o})`;
+                    pen.fill();
                     // 雪花下落
                     flake.y += flake.s;
                     
-                    if (flake.y > canvas_height) {
+                    if (flake.y > height) {
                         flake.y = -5;
-                        flake.x = Math.random() * canvas_width;
+                        flake.x = Math.random() * width;
                     }
                 });
                 requestAnimationFrame(draw_snow);
             }
 
-            // 窗口大小变化时重新适配
+            // 窗口变化
             window.addEventListener('resize', () => {
-                resize_canvas();
+                re();
                 create_snowflakes();
             });
 
-            // 初始化雪花
-            resize_canvas();
+            // 初始化
+            re();
             create_snowflakes();
             draw_snow();
         }
 
         // 启动！
         window.onload = function() {
-            init_tree();
-            animate_tree();
-            init_snow();
+            initTree();
+            animateTree();
+            initSnow();
         };
     </script>
 </body>
